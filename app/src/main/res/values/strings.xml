@@ -5,4 +5,5 @@
     <string name="Frag2">Timer Frag</string>
     <string name="Frag3">WishList Frag</string>
     <string name="Frag4">Settings Frag</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

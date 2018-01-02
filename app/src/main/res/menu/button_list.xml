@@ -4,22 +4,22 @@
     <item
         android:id="@+id/item_one"
         android:icon="@drawable/ic_maps"
-        android:title="one"
+        android:title="Lock The Loc"
         />
 
     <item
         android:id="@+id/item_two"
         android:icon="@drawable/ic_timer"
-        android:title="two"/>
+        android:title="The Time"/>
 
     <item
         android:id="@+id/item_three"
         android:icon="@drawable/ic_wlist"
-        android:title="three"/>
+        android:title="Make A Wish"/>
 
     <item
         android:id="@+id/item_four"
         android:icon="@drawable/ic_settings"
-        android:title="four"/>
+        android:title="Settings"/>
 
 </menu>

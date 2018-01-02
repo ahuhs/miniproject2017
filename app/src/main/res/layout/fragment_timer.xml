@@ -2,12 +2,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgnd"
     tools:context="com.a4dotsinc.profilo.TimerFrag">
 
     <TextView
+        android:id="@+id/timetext"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:text="@string/Frag2"
-        android:gravity="center"/>
+        android:textColor="@color/textColor"
+        android:textSize="40dp"
+        android:textStyle="bold" />
 
 </FrameLayout>

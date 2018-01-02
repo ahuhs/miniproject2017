@@ -2,36 +2,38 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <FrameLayout
+        android:id="@+id/theframe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:id="@+id/theframe">
+        android:layout_centerVertical="true">
 
     </FrameLayout>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:layout_gravity="bottom|end"
-        android:layout_marginRight="20dp"
         android:layout_marginBottom="80dp"
+        android:layout_marginRight="20dp"
+        android:clickable="true"
         android:src="@drawable/ic_place"
         app:srcCompat="@color/colorAccent" />
+
     <android.support.design.widget.AppBarLayout
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             layout="@layout/tool_bar"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -40,9 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:menu="@menu/button_list"
+        android:background="@android:color/white"
         android:elevation="20dp"
-        android:background="@android:color/holo_orange_light"
-
+        app:menu="@menu/button_list"
         />
 </merge>

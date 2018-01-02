@@ -2,12 +2,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.a4dotsinc.profilo.SettingsFrag">
+    tools:context="com.a4dotsinc.profilo.SettingsFrag"
+    android:background="@color/backgnd">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/Frag4"
-        android:gravity="center"/>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/stop"
+        android:layout_alignStart="@+id/stop"
+        android:layout_marginBottom="52dp"
+        android:onClick="startservice"
+        android:text="Start Service" />
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="200dp"
+        android:onClick="stopservice"
+        android:text="Stop Service" />
+
+</RelativeLayout>
 
 </FrameLayout>

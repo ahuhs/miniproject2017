@@ -9,5 +9,26 @@
     android:minHeight="?attr/actionBarSize"
     app:theme="@style/AppTheme">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profilo"
+        android:fontFamily="@font/ranga_rold"
+        android:layout_gravity="center"
+        android:textColor="@color/common_google_signin_btn_text_light"
+        android:shadowColor="#ff6cc450"
+        android:shadowRadius="5"
+        android:shadowDy="5"
+        android:textSize="33dp"
+        android:id="@+id/title"/>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/login"
+        android:id="@+id/login_img_btn"
+        android:background="@color/colorPrimary"
+        />
 
 </android.support.v7.widget.Toolbar>
