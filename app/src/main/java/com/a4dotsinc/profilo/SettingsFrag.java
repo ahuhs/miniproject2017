@@ -1,6 +1,10 @@
 package com.a4dotsinc.profilo;
 
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,14 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SettingsFrag extends Fragment {
-
-
 
     public SettingsFrag() {
         // Required empty public constructor
@@ -34,17 +37,18 @@ public class SettingsFrag extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
 
-        final Button st = (Button)view.findViewById(R.id.start);
-        final Button sto = (Button)view.findViewById(R.id.stop);
+        final Button start = (Button)view.findViewById(R.id.start);
+        final Button stop = (Button)view.findViewById(R.id.stop);
 
-        st.setOnClickListener(new View.OnClickListener() {
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ServiceWorker.s = getActivity();
                 Intent intent = new Intent(getContext(), ServiceWorker.class);
                 getActivity().startService(intent);
             }
         });
-        sto.setOnClickListener(new View.OnClickListener() {
+        stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), ServiceWorker.class);

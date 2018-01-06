@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                     floatingActionButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            DialogFragment timepicker = new TimePickerFrag();
-                            timepicker.show(getSupportFragmentManager(), "time picker");
+                            Intent toadd = new Intent(MainActivity.this, Timepic_Activity.class);
+                            startActivity(toadd);
                         }
                     });
                 } else if (id == R.id.item_three) {

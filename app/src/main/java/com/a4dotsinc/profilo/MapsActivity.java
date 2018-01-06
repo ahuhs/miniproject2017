@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -64,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onMyLocationChange(Location location) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
+                Toast.makeText(getApplicationContext(), "Map Job started", Toast.LENGTH_SHORT).show();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 String userId = "TestUser";
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("LiveLoc");

@@ -6,4 +6,8 @@
     <string name="Frag3">WishList Frag</string>
     <string name="Frag4">Settings Frag</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
