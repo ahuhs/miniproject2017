@@ -101,8 +101,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     @Override
     public void onTimeSet(TimePicker timePicker, int hour, int minu) {
-        TextView t = (TextView)findViewById(R.id.timetext);
-        t.setText("Hour :"+hour+" Minute :"+minu);
+
     }
 
     private void select() {
