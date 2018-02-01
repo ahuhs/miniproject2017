@@ -1,5 +1,7 @@
 package com.a4dotsinc.profilo;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -8,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         toolbar = (Toolbar)findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
+        ActivityCompat.requestPermissions(MainActivity.this, new  String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
         ImageButton imgbtn = (ImageButton)findViewById(R.id.login_img_btn);
         select();
