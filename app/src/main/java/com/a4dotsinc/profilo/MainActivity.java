@@ -15,6 +15,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -33,83 +35,63 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.long1.spacetablayout.SpaceTabLayout;
+
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener{
 
     Toolbar toolbar;
-    BottomNavigationView bottomNavigationView;
-    FloatingActionButton floatingActionButton;
+    SpaceTabLayout spaceTabLayout;
     Activity aaa = MainActivity.this;
     private DatabaseReference mDatabase;
     private final int REQUEST_CODE_PLACEPICKER = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_layout);
+        setContentView(R.layout.activity_main);
         toolbar = (Toolbar)findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
         ActivityCompat.requestPermissions(MainActivity.this, new  String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
         ImageButton imgbtn = (ImageButton)findViewById(R.id.login_img_btn);
-        select();
-        bottomNavigationView = (BottomNavigationView)findViewById(R.id.bottom_tabs);
-        floatingActionButton = (FloatingActionButton)findViewById(R.id.floatingActionButton);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        List<Fragment> fragmentList = new ArrayList<>();
+        fragmentList.add(new MapFrag());
+        fragmentList.add(new TimerFrag());
+        fragmentList.add(new WelcomeFrag());
+        fragmentList.add(new WishlistFrag());
+        fragmentList.add(new SettingsFrag());
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.content_viewer);
+        final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.mainRelative);
+        spaceTabLayout = (SpaceTabLayout) findViewById(R.id.spaceTabLayout);
+
+        spaceTabLayout.initialize(viewPager, getSupportFragmentManager(), fragmentList, savedInstanceState);
+
+        spaceTabLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment = null;
-                int id = item.getItemId();
+            public void onClick(View v) {
+                switch (spaceTabLayout.getCurrentPosition()){
+                    case 0 :  startPlacePickerActivity();
+                              break;
+                    case 1 :   Intent toadd = new Intent(MainActivity.this, Timepic_Activity.class);
+                               startActivity(toadd);
+                               break;
+                    case 2 :
 
-                if (id == R.id.item_one) {
-                    fragment = new MapFrag();
-                    floatingActionButton.setVisibility(View.VISIBLE);
-                    floatingActionButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_place_add));
-                    floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                        //    Intent tomap = new Intent(MainActivity.this, MapsActivity.class);
-                         //   startActivity(tomap);
-                            startPlacePickerActivity();
-                        }
-                    });
-                } else if (id == R.id.item_two) {
+                    case 3 :
 
-                    fragment = new TimerFrag();
-                    floatingActionButton.setVisibility(View.VISIBLE);
-                    floatingActionButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_add));
-                    floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent toadd = new Intent(MainActivity.this, Timepic_Activity.class);
-                            startActivity(toadd);
-                        }
-                    });
-                } else if (id == R.id.item_three) {
+                    case 4 :
 
-                    fragment = new WishlistFrag();
-                    floatingActionButton.setVisibility(View.VISIBLE);
-                    floatingActionButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_add));
-                    floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    });
-                } else if (id == R.id.item_four) {
-
-                    fragment = new SettingsFrag();
-                    floatingActionButton.setVisibility(View.GONE);
+                    default: break;
                 }
 
-                if (fragment != null){
-                    FragmentTransaction ft  =  getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.theframe, fragment);
-                    ft.commit();
-                }
-                return true;
+
             }
-
             private void startPlacePickerActivity() {
 
                 PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
@@ -122,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 }
             }
         });
+
         imgbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,11 +142,4 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     }
 
-    private void select() {
-        Fragment f = null;
-        f = new MapFrag();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.theframe, f);
-        ft.commit();
-    }
 }

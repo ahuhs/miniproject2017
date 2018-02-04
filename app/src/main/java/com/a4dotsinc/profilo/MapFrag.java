@@ -43,7 +43,6 @@ public class MapFrag extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
-
         recyclerView = (RecyclerView)view.findViewById(R.id.maprecycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
