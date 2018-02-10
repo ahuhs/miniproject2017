@@ -129,11 +129,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         final String lat_val = String.valueOf(lat);
         final String lon_val = String.valueOf(lon);
         final String name = placeselect.getAddress().toString();
+        final String MapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+lat_val+","+lon_val+"&zoom=16&size=200x100&scale=2" +
+                "&markers=color:blue%7Clabel:S%7C"+lat_val+","+lon_val+"&key=AIzaSyBVRBgrGQqX3fkEfyV3pSX_keEJbaz7Oyc";
         if (!TextUtils.isEmpty(lat_val) && !TextUtils.isEmpty(lon_val)){
-            DatabaseReference newPost = mDatabase.push();
-            newPost.child("lat").setValue(lat_val);
-            newPost.child("lon").setValue(lon_val);
-            newPost.child("name").setValue(name);
+            MapRecycler mapRecycler  = new MapRecycler(lat_val, lon_val, name, MapUrl);
+            mDatabase.push().setValue(mapRecycler);
+           // DatabaseReference newLocdat = mDatabase.push();
+           // newLocdat.child("lat").setValue(lat_val);
+           // newLocdat.child("lon").setValue(lon_val);
+          //  newLocdat.child("name").setValue(name);
+           // newLocdat.child("imgUrl").setValue(MapUrl);
         }
     }
 

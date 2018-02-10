@@ -12,6 +12,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Timepic_Activity extends AppCompatActivity  implements TimePickerDialog.OnTimeSetListener{
 
@@ -19,6 +21,7 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
     TextView st, sto;
     FloatingActionButton sub;
     Firebase timeurl;
+    DatabaseReference mDatabase;
     String ss;
     boolean hh=true;
 
@@ -33,6 +36,7 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
         Firebase.setAndroidContext(this);
 
         timeurl = new Firebase("https://profilo-190814.firebaseio.com/Timer/testuser/").push();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Timer").child("testuser");
 
         st.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,12 +74,8 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
     }
 
     private void addtobase() {
-        Firebase newChild1 = timeurl.child("start");
-        newChild1.setValue(st.getText().toString());
-        Firebase newChild2 = timeurl.child("end");
-        newChild2.setValue(sto.getText().toString());
-        Firebase newChild3 = timeurl.child("active");
-        newChild3.setValue(true);
+        TimeRecycler timeRecycler = new TimeRecycler(st.getText().toString(),sto.getText().toString(), true);
+        mDatabase.push().setValue(timeRecycler);
     }
 
     @Override

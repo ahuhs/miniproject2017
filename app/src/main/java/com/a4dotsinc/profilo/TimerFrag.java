@@ -68,8 +68,10 @@ public class TimerFrag extends Fragment {
         ) {
             @Override
             protected void populateViewHolder(TimeViewHolder viewHolder, TimeRecycler model, int position) {
-                viewHolder.setStart(model.getHead());
-                viewHolder.setStop(model.getDesc());
+                viewHolder.start.setText(model.getStarttime());
+                viewHolder.stop.setText(model.getEndtime());
+                Log.d(model.getStarttime(), "start");
+                Log.d(model.getEndtime(), "stop");
             }
         };
 
@@ -78,28 +80,13 @@ public class TimerFrag extends Fragment {
     }
     public static class TimeViewHolder extends RecyclerView.ViewHolder{
 
-        View mView;
+        TextView start, stop;
 
         public TimeViewHolder(View itemView) {
             super(itemView);
 
-            mView = itemView;
-        }
-        public void setStart(String st){
-
-            TextView start = (TextView)mView.findViewById(R.id.startTimer);
-            Log.e(st, "setStart: ");
-            start.setText(st);
-
-
-        }
-        public void setStop(String sto){
-
-            TextView stop = (TextView)mView.findViewById(R.id.endTimer);
-            Log.e(sto, "setStop: ");
-            stop.setText(sto);
-
-
+            start = (TextView)itemView.findViewById(R.id.startTimer);
+            stop = (TextView)itemView.findViewById(R.id.endTimer);
         }
     }
 

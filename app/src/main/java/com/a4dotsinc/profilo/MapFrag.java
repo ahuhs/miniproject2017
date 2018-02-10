@@ -1,6 +1,8 @@
 package com.a4dotsinc.profilo;
 
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,11 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -60,7 +64,10 @@ public class MapFrag extends Fragment {
         ) {
             @Override
             protected void populateViewHolder(MapFrag.MapViewHolder viewHolder, MapRecycler model, int position) {
-                viewHolder.setName(model.getName());
+              //  viewHolder.setName(model.getName());
+               // viewHolder.setImage(getContext(), model.getImage());
+                viewHolder.Name.setText(model.getName());
+                Picasso.with(getContext()).load(model.getImage()).into(viewHolder.map_image);
             }
         };
 
@@ -70,20 +77,30 @@ public class MapFrag extends Fragment {
     public static class MapViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
+        TextView Name;
+        ImageView map_image;
 
         public MapViewHolder(View itemView) {
             super(itemView);
 
-            mView = itemView;
+            //mView = itemView;
+            Name = (TextView)itemView.findViewById(R.id.map_name);
+            map_image = (ImageView)itemView.findViewById(R.id.map_img);
+
         }
         public void setName(String name){
 
             TextView Name = (TextView)mView.findViewById(R.id.map_name);
             Log.e(name, "setStart: ");
             Name.setText(name);
-
-
         }
+
+        public void setImage(Context ctx, String image){
+            ImageView map_image = (ImageView)mView.findViewById(R.id.map_img);
+            Log.e(image, "ImgData: ");
+            Picasso.with(ctx).load(image).into(map_image);
+        }
+
     }
 
 }
