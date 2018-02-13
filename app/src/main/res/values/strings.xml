@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Profilo</string>
 
+    <string name="launch_activity">Launch activity</string>
+    <string name="remove_location_updates">Remove location updates</string>
+    <string name="location_updated">Location Updated: %1$s</string>
+
     <string name="Frag1">Maps Frag</string>
     <string name="Frag2">Timer Frag</string>
     <string name="Frag3">WishList Frag</string>

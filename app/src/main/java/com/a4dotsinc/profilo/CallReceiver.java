@@ -38,8 +38,8 @@ public class CallReceiver extends BroadcastReceiver{
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                          WishRecycler wishRecycler1 = snapshot.getValue(WishRecycler.class);
                          if (wishRecycler1.getNumber().equals(number)){
-                             AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-                             audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+                             //AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+                             //audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
                              Toast.makeText(context, "Found the Number", Toast.LENGTH_SHORT).show();
                              break;
                          }
