@@ -3,6 +3,7 @@ package com.a4dotsinc.profilo;
 import android.*;
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -13,6 +14,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -42,6 +44,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.github.kmenager.materialanimatedswitch.MaterialAnimatedSwitch;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     };
 
     public SwitchButton switchButton;
+    public MaterialAnimatedSwitch materialAnimatedSwitch;
 
     Toolbar toolbar;
     SpaceTabLayout spaceTabLayout;
@@ -105,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         ActivityCompat.requestPermissions(MainActivity.this, new  String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
         ImageButton imgbtn = (ImageButton)findViewById(R.id.login_img_btn);
+
+        materialAnimatedSwitch = (MaterialAnimatedSwitch)findViewById(R.id.toggle_loc);
 
         myReceiver = new MyReceiver();
 
@@ -172,18 +178,37 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 .registerOnSharedPreferenceChangeListener(this);
 
 
-        switchButton = (SwitchButton) findViewById(R.id.toggle_loc);
+        //switchButton = (SwitchButton) findViewById(R.id.toggle_loc);
 
 
-        switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+        //switchButton.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+        //    @Override
+        //    public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+        //        if(isChecked){
+        //            mService.requestLocationUpdates();
+        //       }
+        //        else {
+        //            mService.removeLocationUpdates();
+        //        }
+        //    }
+        //});
+
+        materialAnimatedSwitch.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+            public void onCheckedChanged(boolean isChecked) {
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)&& (!notificationManager.isNotificationPolicyAccessGranted())){
+                    Intent intent = new Intent(
+                            android.provider.Settings
+                                    .ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+
+                    startActivity(intent);}
                 if(isChecked){
-                    mService.requestLocationUpdates();
-                }
-                else {
-                    mService.removeLocationUpdates();
-                }
+                                mService.requestLocationUpdates();
+                           }
+                            else {
+                                mService.removeLocationUpdates();
+                            }
             }
         });
 
@@ -259,8 +284,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationUpdatesService.EXTRA_LOCATION);
             if (location != null) {
-                Toast.makeText(MainActivity.this, Utils.getLocationText(location),
-                        Toast.LENGTH_SHORT).show();
+               // Toast.makeText(MainActivity.this, Utils.getLocationText(location),Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -275,9 +299,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
     private void setButtonsState(boolean requestingLocationUpdates) {
         if (requestingLocationUpdates) {
-            switchButton.setChecked(true);
+            materialAnimatedSwitch.setActivated(true);
         } else {
-            switchButton.setChecked(false);
+            materialAnimatedSwitch.setActivated(false);
         }
     }
 }

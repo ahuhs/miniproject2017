@@ -31,10 +31,28 @@
         android:background="@color/colorPrimary"
         />
 
-    <com.suke.widget.SwitchButton
+    <!--<com.suke.widget.SwitchButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:id="@+id/toggle_loc" />
+        android:id="@+id/toggle_loc" />-->
+
+    <com.github.kmenager.materialanimatedswitch.MaterialAnimatedSwitch
+        android:id="@+id/toggle_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        app:ball_press_color="#ffffff"
+        app:ball_radius="15dp"
+        app:ball_release_color="#FF5722"
+        app:base_press_color="#FBE9E7"
+        app:base_release_color="#BF360C"
+        app:icon_release="@drawable/ic_play_arrow_white_36dp"
+        app:icon_press="@drawable/ic_stop_deep_orange_500_36dp"
+        app:icon_size="20dp"
+        app:margin="17dp"
+        app:switch_height="35dp"
+        app:switch_width="65dp" />
 
 </android.support.v7.widget.Toolbar>

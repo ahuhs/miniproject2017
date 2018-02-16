@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.location.Location;
+import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -24,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -237,7 +239,6 @@ public class LocationUpdatesService extends Service {
     public void requestLocationUpdates() {
         Log.i(TAG, "Requesting location updates");
         Utils.setRequestingLocationUpdates(this, true);
-        Toast.makeText(getApplicationContext(), "Reached here", Toast.LENGTH_SHORT).show();
         startService(new Intent(getApplicationContext(), LocationUpdatesService.class));
         try {
             mFusedLocationClient.requestLocationUpdates(mLocationRequest,
@@ -325,6 +326,8 @@ public class LocationUpdatesService extends Service {
     private void onNewLocation(Location location) {
         Log.i(TAG, "New location: " + location);
 
+        final AudioManager am = (AudioManager)getSystemService(AUDIO_SERVICE);
+
         mLocation = location;
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
         // Notify anyone listening for broadcasts about the new location.
@@ -346,10 +349,13 @@ public class LocationUpdatesService extends Service {
                         float[] results = new float[1];
                         Livloc.distanceBetween(Double.parseDouble(mapRecycler.getLatitude()),Double.parseDouble(mapRecycler.getLongitude()), Double.parseDouble(Utils.getLat(mLocation)) , Double.parseDouble(Utils.getLon(mLocation)), results);
                             if (results[0]<30){
-                                Toast.makeText(getApplicationContext(), mapRecycler.getName()+"In the Location", Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(getApplicationContext(), mapRecycler.getName()+"In the Location", Toast.LENGTH_SHORT).show();
+                                am.setRingerMode(am.RINGER_MODE_VIBRATE);
                             }
                             else {
-
+                                if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE){
+                                    am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                                }
                             }
                         }
                     }
