@@ -15,12 +15,11 @@ public class MapRecycler {
 
     }
 
-    public MapRecycler( String lat, String lon, String name, String image) {
+    public MapRecycler( String lat, String lon, String name, String imagem) {
         this.lat = lat;
         this.lon = lon;
         this.name = name;
-        this.imgUrl = image;
-
+        this.imgUrl = imagem;
     }
 
     public String getImage() {

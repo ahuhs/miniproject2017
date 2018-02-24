@@ -57,7 +57,7 @@ import com.google.firebase.database.ValueEventListener;
  */
 public class LocationUpdatesService extends Service {
 
-    DatabaseReference mDatabase;
+    DatabaseReference mDatabase, mFlagedLoc;
 
     private static final String PACKAGE_NAME =
             "com.a4dotsinc.profilo";
@@ -80,7 +80,7 @@ public class LocationUpdatesService extends Service {
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 3000;
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
 
     /**
      * The fastest rate for active location updates. Updates will never be more frequent
@@ -330,6 +330,7 @@ public class LocationUpdatesService extends Service {
 
         mLocation = location;
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
+        mFlagedLoc = FirebaseDatabase.getInstance().getReference().child("FlagedLoc").child("TestUser");
         // Notify anyone listening for broadcasts about the new location.
         Intent intent = new Intent(ACTION_BROADCAST);
         intent.putExtra(EXTRA_LOCATION, location);
@@ -339,33 +340,67 @@ public class LocationUpdatesService extends Service {
         if (serviceIsRunningInForeground(this)) {
             mNotificationManager.notify(NOTIFICATION_ID, getNotification());
 
-            //Fetch From Firebase and Compare
-            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                        MapRecycler mapRecycler = snapshot.getValue(MapRecycler.class);
-                        if (true){
-                        float[] results = new float[1];
-                        Livloc.distanceBetween(Double.parseDouble(mapRecycler.getLatitude()),Double.parseDouble(mapRecycler.getLongitude()), Double.parseDouble(Utils.getLat(mLocation)) , Double.parseDouble(Utils.getLon(mLocation)), results);
-                            if (results[0]<30){
-                               // Toast.makeText(getApplicationContext(), mapRecycler.getName()+"In the Location", Toast.LENGTH_SHORT).show();
-                                am.setRingerMode(am.RINGER_MODE_VIBRATE);
+                mFlagedLoc.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                            String flag = dataSnapshot.child("flag").getValue(String.class);
+                        Log.d(flag, "Flag: ");
+                        if (flag.equals("0")){
+                            //Fetch From Firebase and Compare
+                            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        MapRecycler mapRecycler = snapshot.getValue(MapRecycler.class);
+                                        if (true) {
+                                            float[] results = new float[1];
+                                            Livloc.distanceBetween(Double.parseDouble(mapRecycler.getLatitude()), Double.parseDouble(mapRecycler.getLongitude()), Double.parseDouble(Utils.getLat(mLocation)), Double.parseDouble(Utils.getLon(mLocation)), results);
+                                            if (results[0] < 50) {
+                                                if (am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
+                                                    am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                                                    FlagedLoc flagedLoc = new FlagedLoc(mapRecycler.getLatitude(), mapRecycler.getLongitude(), "1");
+                                                    mFlagedLoc.setValue(flagedLoc);
+                                                    Log.d(mapRecycler.getName(), "In Else");
+                                                }
+                                                // Toast.makeText(getApplicationContext(), mapRecycler.getName()+"In the Location", Toast.LENGTH_SHORT).show();
+
+                                            } else {
+                                                if (am.getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
+                                                    am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                                                    Log.d("Scope", "In Else");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                        else {
+                            float[] result = new float[1];
+                            Livloc.distanceBetween(Double.parseDouble(dataSnapshot.child("lat").getValue().toString()), Double.parseDouble(dataSnapshot.child("lon").getValue().toString()), Double.parseDouble(Utils.getLat(mLocation)), Double.parseDouble(Utils.getLon(mLocation)), result);
+                            if (result[0] > 50) {
+                                mFlagedLoc.child("flag").setValue("0");
+                                mFlagedLoc.child("lat").setValue(null);
+                                mFlagedLoc.child("lon").setValue(null);
+
                             }
                             else {
-                                if (am.getRingerMode() == AudioManager.RINGER_MODE_VIBRATE){
-                                    am.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-                                }
+                                am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                             }
                         }
+
                     }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                }
-            });
+                    }
+                });
         }
     }
 

@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     Toolbar toolbar;
     SpaceTabLayout spaceTabLayout;
     Activity aaa = MainActivity.this;
-    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabase, mFlagedLoc;
     private final int REQUEST_CODE_PLACEPICKER = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         getSupportActionBar().setTitle(null);
         ActivityCompat.requestPermissions(MainActivity.this, new  String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
+        mFlagedLoc = FirebaseDatabase.getInstance().getReference().child("FlagedLoc").child("TestUser");
         ImageButton imgbtn = (ImageButton)findViewById(R.id.login_img_btn);
 
         materialAnimatedSwitch = (MaterialAnimatedSwitch)findViewById(R.id.toggle_loc);
@@ -266,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         if (!TextUtils.isEmpty(lat_val) && !TextUtils.isEmpty(lon_val)){
             MapRecycler mapRecycler  = new MapRecycler(lat_val, lon_val, name, MapUrl);
             mDatabase.push().setValue(mapRecycler);
+            mFlagedLoc.child("flag").setValue("0");
            // DatabaseReference newLocdat = mDatabase.push();
            // newLocdat.child("lat").setValue(lat_val);
            // newLocdat.child("lon").setValue(lon_val);
