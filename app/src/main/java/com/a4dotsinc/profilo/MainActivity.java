@@ -3,6 +3,7 @@ package com.a4dotsinc.profilo;
 import android.*;
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
@@ -12,9 +13,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -37,7 +41,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -50,8 +56,10 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 import com.suke.widget.SwitchButton;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,6 +102,8 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public SwitchButton switchButton;
     public MaterialAnimatedSwitch materialAnimatedSwitch;
 
+    Dialog mapDialog;
+
     Toolbar toolbar;
     SpaceTabLayout spaceTabLayout;
     Activity aaa = MainActivity.this;
@@ -114,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         materialAnimatedSwitch = (MaterialAnimatedSwitch)findViewById(R.id.toggle_loc);
 
         myReceiver = new MyReceiver();
+        mapDialog = new Dialog(this);
 
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new MapFrag());
@@ -193,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         //        }
         //    }
         //});
-
         materialAnimatedSwitch.setOnCheckedChangeListener(new MaterialAnimatedSwitch.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(boolean isChecked) {
@@ -261,19 +271,44 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         //double latlonBound = placeselect.getViewport().
         final String lat_val = String.valueOf(lat);
         final String lon_val = String.valueOf(lon);
-        final String name = placeselect.getAddress().toString();
-        final String MapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+lat_val+","+lon_val+"&zoom=17&size=1200x220&scale=3" +
+        //final String name = placeselect.getAddress().toString();
+        final String MapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+lat_val+","+lon_val+"&zoom=15&size=400x120&scale=3" +
                 "&markers=color:blue%7Clabel:S%7C"+lat_val+","+lon_val+"&key=AIzaSyBVRBgrGQqX3fkEfyV3pSX_keEJbaz7Oyc";
         if (!TextUtils.isEmpty(lat_val) && !TextUtils.isEmpty(lon_val)){
-            MapRecycler mapRecycler  = new MapRecycler(lat_val, lon_val, name, MapUrl);
-            mDatabase.push().setValue(mapRecycler);
-            mFlagedLoc.child("flag").setValue("0");
-           // DatabaseReference newLocdat = mDatabase.push();
-           // newLocdat.child("lat").setValue(lat_val);
-           // newLocdat.child("lon").setValue(lon_val);
-          //  newLocdat.child("name").setValue(name);
-           // newLocdat.child("imgUrl").setValue(MapUrl);
+            showMapPop(lat_val, lon_val, MapUrl);
         }
+    }
+
+    private void showMapPop(final String lat_Val,final String lon_Val,final String mapUrl) {
+        TextView close;
+        Button save;
+        final EditText map_name, map_radius;
+        mapDialog.setContentView(R.layout.map_selection_pop_up);
+        mapDialog.show();
+        close = (TextView) mapDialog.findViewById(R.id.txtclose);
+        save = (Button) mapDialog.findViewById(R.id.map_save_btn);
+        map_name = (EditText) mapDialog.findViewById(R.id.map_name);
+        map_radius = (EditText) mapDialog.findViewById(R.id.map_radius);
+        ImageView map_view = (ImageView) mapDialog.findViewById(R.id.pop_map_img);
+
+        Picasso.with(this).load(mapUrl).into(map_view);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapDialog.dismiss();
+            }
+        });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapRecycler mapRecycler  = new MapRecycler(lat_Val, lon_Val, map_name.getText().toString(), Float.parseFloat(map_radius.getText().toString()), mapUrl, false);
+                mDatabase.push().setValue(mapRecycler);
+                mFlagedLoc.child("flag").setValue("0");
+                mapDialog.dismiss();
+            }
+        });
+        mapDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     @Override
@@ -301,9 +336,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
     private void setButtonsState(boolean requestingLocationUpdates) {
         if (requestingLocationUpdates) {
-            materialAnimatedSwitch.setActivated(true);
+            materialAnimatedSwitch.setEnabled(true);
         } else {
-            materialAnimatedSwitch.setActivated(false);
+            materialAnimatedSwitch.setEnabled(false);
         }
     }
 }

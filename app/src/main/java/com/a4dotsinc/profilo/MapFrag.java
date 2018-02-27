@@ -12,9 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.firebase.client.Firebase;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -29,6 +33,8 @@ public class MapFrag extends Fragment {
     private RecyclerView recyclerView;
 
     private DatabaseReference mDatabase;
+
+    private FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder> firebaseRecyclerAdapter;
 
 
     public MapFrag() {
@@ -56,18 +62,30 @@ public class MapFrag extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder>(
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder>(
                 MapRecycler.class,
                 R.layout.map_card_list,
                 MapFrag.MapViewHolder.class,
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(MapFrag.MapViewHolder viewHolder, MapRecycler model, int position) {
-              //  viewHolder.setName(model.getName());
-               // viewHolder.setImage(getContext(), model.getImage());
+            protected void populateViewHolder(final MapFrag.MapViewHolder viewHolder, final MapRecycler model, final int position) {
                 viewHolder.Name.setText(model.getName());
                 Picasso.with(getContext()).load(model.getImage()).into(viewHolder.map_image);
+                viewHolder.active_switch.setChecked(model.getActive());
+                viewHolder.active_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        Log.d(firebaseRecyclerAdapter.getRef(position).getKey(), "position ");
+                        String key = firebaseRecyclerAdapter.getRef(position).getKey();
+                        if(b){
+                            mDatabase.child(key).child("active").setValue(true);
+                        }
+                        else {
+                            mDatabase.child(key).child("active").setValue(false);
+                        }
+                    }
+                });
             }
         };
 
@@ -79,6 +97,7 @@ public class MapFrag extends Fragment {
         View mView;
         TextView Name;
         ImageView map_image;
+        Switch active_switch;
 
         public MapViewHolder(View itemView) {
             super(itemView);
@@ -86,7 +105,7 @@ public class MapFrag extends Fragment {
             //mView = itemView;
             Name = (TextView)itemView.findViewById(R.id.map_name);
             map_image = (ImageView)itemView.findViewById(R.id.map_img);
-
+            active_switch = (Switch)itemView.findViewById(R.id.active_state);
         }
         public void setName(String name){
 
@@ -99,6 +118,10 @@ public class MapFrag extends Fragment {
             ImageView map_image = (ImageView)mView.findViewById(R.id.map_img);
             Log.e(image, "ImgData: ");
             Picasso.with(ctx).load(image).into(map_image);
+        }
+        public void setActive(Boolean active){
+            Switch act_switch = (Switch)mView.findViewById(R.id.active_state);
+            act_switch.setChecked(active);
         }
 
     }

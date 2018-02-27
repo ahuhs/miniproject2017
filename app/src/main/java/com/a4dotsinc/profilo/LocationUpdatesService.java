@@ -352,13 +352,13 @@ public class LocationUpdatesService extends Service {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         MapRecycler mapRecycler = snapshot.getValue(MapRecycler.class);
-                                        if (true) {
+                                        if (mapRecycler.getActive()) {
                                             float[] results = new float[1];
                                             Livloc.distanceBetween(Double.parseDouble(mapRecycler.getLatitude()), Double.parseDouble(mapRecycler.getLongitude()), Double.parseDouble(Utils.getLat(mLocation)), Double.parseDouble(Utils.getLon(mLocation)), results);
-                                            if (results[0] < 50) {
+                                            if (results[0] < mapRecycler.getRadius()) {
                                                 if (am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
                                                     am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                                                    FlagedLoc flagedLoc = new FlagedLoc(mapRecycler.getLatitude(), mapRecycler.getLongitude(), "1");
+                                                    FlagedLoc flagedLoc = new FlagedLoc(mapRecycler.getLatitude(), mapRecycler.getLongitude(), "1", mapRecycler.getRadius());
                                                     mFlagedLoc.setValue(flagedLoc);
                                                     Log.d(mapRecycler.getName(), "In Else");
                                                 }
@@ -383,10 +383,11 @@ public class LocationUpdatesService extends Service {
                         else {
                             float[] result = new float[1];
                             Livloc.distanceBetween(Double.parseDouble(dataSnapshot.child("lat").getValue().toString()), Double.parseDouble(dataSnapshot.child("lon").getValue().toString()), Double.parseDouble(Utils.getLat(mLocation)), Double.parseDouble(Utils.getLon(mLocation)), result);
-                            if (result[0] > 50) {
+                            if (result[0] > Float.parseFloat(dataSnapshot.child("radius").getValue().toString())) {
                                 mFlagedLoc.child("flag").setValue("0");
                                 mFlagedLoc.child("lat").setValue(null);
                                 mFlagedLoc.child("lon").setValue(null);
+                                mFlagedLoc.child("radius").setValue(null);
 
                             }
                             else {
