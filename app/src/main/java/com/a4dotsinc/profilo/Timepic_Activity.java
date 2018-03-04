@@ -29,7 +29,7 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timepic_);
-        back = (ImageButton)findViewById(R.id.back_btn);
+        back = (ImageButton)findViewById(R.id.back);
         sub = (FloatingActionButton) findViewById(R.id.add_btn);
         st = (TextView) findViewById(R.id.add_start_id);
         sto = (TextView) findViewById(R.id.add_stop_id);

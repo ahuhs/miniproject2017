@@ -46,6 +46,7 @@ public class WishlistFrag extends Fragment {
         recyclerView = (RecyclerView)view.findViewById(R.id.numRecycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
     }
 
     @Override

@@ -10,12 +10,22 @@ public class FlagedLoc {
     String lon;
     String flag;
     Float radius;
+    String key;
 
-    public FlagedLoc(String lat, String lon, String flag, Float radius) {
+    public FlagedLoc(String lat, String lon, String flag, Float radius, String key) {
         this.lat = lat;
         this.lon = lon;
         this.flag = flag;
         this.radius = radius;
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Float getRadius() {

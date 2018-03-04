@@ -19,6 +19,7 @@
         android:layout_marginTop="7dp"
         android:background="@drawable/custom_close_btn"
         android:gravity="center"
+        android:elevation="6dp"
         android:text="X"
         android:textColor="#000"
         android:textStyle="bold" />
@@ -64,6 +65,7 @@
         android:layout_marginBottom="13dp"
         android:text="SAVE"
         android:textStyle="bold"
+        android:elevation="20dp"
         android:textColor="#fff"
         android:background="@drawable/custom_pop_btn_big"/>
 

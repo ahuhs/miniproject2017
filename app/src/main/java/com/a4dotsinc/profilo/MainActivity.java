@@ -15,6 +15,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -35,6 +36,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     Dialog mapDialog;
 
     Toolbar toolbar;
+
     SpaceTabLayout spaceTabLayout;
     Activity aaa = MainActivity.this;
     private DatabaseReference mDatabase, mFlagedLoc;
@@ -135,11 +138,15 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.content_viewer);
         final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.mainRelative);
+
+
+
         spaceTabLayout = (SpaceTabLayout) findViewById(R.id.spaceTabLayout);
 
         spaceTabLayout.initialize(viewPager, getSupportFragmentManager(), fragmentList, savedInstanceState);
         spaceTabLayout.setTabFourIcon(R.drawable.ic_wlist);
         spaceTabLayout.setTabFiveIcon(R.drawable.ic_settings);
+
 
         spaceTabLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,10 +157,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                     case 1 :   Intent toadd = new Intent(MainActivity.this, Timepic_Activity.class);
                                startActivity(toadd);
                                break;
-                    case 2 :
+                    case 2 :  Toast.makeText(MainActivity.this, Html.fromHtml("<big><b>coded </b></big><small><i>with </i></small>")+"❤", Toast.LENGTH_SHORT).show();
 
                     case 3 :
-
                     case 4 :
 
                     default: break;

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ public class TimerFrag extends Fragment {
     private RecyclerView recyclerView;
 
     private DatabaseReference mDatabase;
+    private FirebaseRecyclerAdapter<TimeRecycler, TimeViewHolder> firebaseRecyclerAdapter;
 
 
 
@@ -60,7 +62,7 @@ public class TimerFrag extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<TimeRecycler, TimeViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<TimeRecycler, TimeViewHolder>(
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<TimeRecycler, TimeViewHolder>(
                 TimeRecycler.class,
                 R.layout.timer_card_list,
                 TimeViewHolder.class,
@@ -68,10 +70,19 @@ public class TimerFrag extends Fragment {
         ) {
             @Override
             protected void populateViewHolder(TimeViewHolder viewHolder, TimeRecycler model, int position) {
+                final String key = firebaseRecyclerAdapter.getRef(position).getKey();
                 viewHolder.start.setText(model.getStarttime());
                 viewHolder.stop.setText(model.getEndtime());
                 Log.d(model.getStarttime(), "start");
                 Log.d(model.getEndtime(), "stop");
+
+                viewHolder.deleteTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mDatabase.child(key).removeValue();
+                    }
+                });
+
             }
         };
 
@@ -81,12 +92,14 @@ public class TimerFrag extends Fragment {
     public static class TimeViewHolder extends RecyclerView.ViewHolder{
 
         TextView start, stop;
+        ImageButton deleteTime;
 
         public TimeViewHolder(View itemView) {
             super(itemView);
 
             start = (TextView)itemView.findViewById(R.id.startTimer);
             stop = (TextView)itemView.findViewById(R.id.endTimer);
+            deleteTime = (ImageButton)itemView.findViewById(R.id.deleteTime);
         }
     }
 

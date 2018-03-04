@@ -5,21 +5,12 @@
     tools:context="com.a4dotsinc.profilo.WishlistFrag"
     android:background="@color/backgnd">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/Frag3"
-        android:gravity="center"
-        android:textColor="@color/textColor"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        android:visibility="gone"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         android:id="@+id/numRecycler"
+        android:background="#fff"
          />
 
 

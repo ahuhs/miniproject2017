@@ -126,6 +126,8 @@ public class LocationUpdatesService extends Service {
     private Location mLocation;
     public Location Livloc;
 
+     public DataSnapshot toaccessLocData;
+
     public LocationUpdatesService() {
     }
 
@@ -331,6 +333,7 @@ public class LocationUpdatesService extends Service {
         mLocation = location;
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
         mFlagedLoc = FirebaseDatabase.getInstance().getReference().child("FlagedLoc").child("TestUser");
+
         // Notify anyone listening for broadcasts about the new location.
         Intent intent = new Intent(ACTION_BROADCAST);
         intent.putExtra(EXTRA_LOCATION, location);
@@ -356,9 +359,10 @@ public class LocationUpdatesService extends Service {
                                             float[] results = new float[1];
                                             Livloc.distanceBetween(Double.parseDouble(mapRecycler.getLatitude()), Double.parseDouble(mapRecycler.getLongitude()), Double.parseDouble(Utils.getLat(mLocation)), Double.parseDouble(Utils.getLon(mLocation)), results);
                                             if (results[0] < mapRecycler.getRadius()) {
+                                                toaccessLocData = dataSnapshot;
                                                 if (am.getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
                                                     am.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                                                    FlagedLoc flagedLoc = new FlagedLoc(mapRecycler.getLatitude(), mapRecycler.getLongitude(), "1", mapRecycler.getRadius());
+                                                    FlagedLoc flagedLoc = new FlagedLoc(mapRecycler.getLatitude(), mapRecycler.getLongitude(), "1", mapRecycler.getRadius(), snapshot.getKey());
                                                     mFlagedLoc.setValue(flagedLoc);
                                                     Log.d(mapRecycler.getName(), "In Else");
                                                 }
@@ -382,12 +386,16 @@ public class LocationUpdatesService extends Service {
                         }
                         else {
                             float[] result = new float[1];
+                            String key = dataSnapshot.child("key").getValue().toString();
+                            Log.d(key, "Key");
+                            Log.d(toaccessLocData.child(key).child("active").getValue().toString(), "Key from Some db");
                             Livloc.distanceBetween(Double.parseDouble(dataSnapshot.child("lat").getValue().toString()), Double.parseDouble(dataSnapshot.child("lon").getValue().toString()), Double.parseDouble(Utils.getLat(mLocation)), Double.parseDouble(Utils.getLon(mLocation)), result);
-                            if (result[0] > Float.parseFloat(dataSnapshot.child("radius").getValue().toString())) {
+                            if ((result[0] > Float.parseFloat(dataSnapshot.child("radius").getValue().toString()))|| !(Boolean.parseBoolean(toaccessLocData.child(key).child("active").getValue().toString()))) {
                                 mFlagedLoc.child("flag").setValue("0");
                                 mFlagedLoc.child("lat").setValue(null);
                                 mFlagedLoc.child("lon").setValue(null);
                                 mFlagedLoc.child("radius").setValue(null);
+                                mFlagedLoc.child("key").setValue(null);
 
                             }
                             else {

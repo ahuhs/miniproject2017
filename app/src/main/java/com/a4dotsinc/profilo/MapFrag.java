@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -70,20 +71,27 @@ public class MapFrag extends Fragment {
         ) {
             @Override
             protected void populateViewHolder(final MapFrag.MapViewHolder viewHolder, final MapRecycler model, final int position) {
+                final String key = firebaseRecyclerAdapter.getRef(position).getKey();
                 viewHolder.Name.setText(model.getName());
                 Picasso.with(getContext()).load(model.getImage()).into(viewHolder.map_image);
                 viewHolder.active_switch.setChecked(model.getActive());
+                mDatabase.child(key).child("key").setValue(key);
                 viewHolder.active_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                         Log.d(firebaseRecyclerAdapter.getRef(position).getKey(), "position ");
-                        String key = firebaseRecyclerAdapter.getRef(position).getKey();
                         if(b){
                             mDatabase.child(key).child("active").setValue(true);
                         }
                         else {
                             mDatabase.child(key).child("active").setValue(false);
                         }
+                    }
+                });
+                viewHolder.delete_map.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mDatabase.child(key).removeValue();
                     }
                 });
             }
@@ -98,6 +106,7 @@ public class MapFrag extends Fragment {
         TextView Name;
         ImageView map_image;
         Switch active_switch;
+        ImageButton delete_map;
 
         public MapViewHolder(View itemView) {
             super(itemView);
@@ -106,6 +115,7 @@ public class MapFrag extends Fragment {
             Name = (TextView)itemView.findViewById(R.id.map_name);
             map_image = (ImageView)itemView.findViewById(R.id.map_img);
             active_switch = (Switch)itemView.findViewById(R.id.active_state);
+            delete_map = (ImageButton) itemView.findViewById(R.id.map_delete);
         }
         public void setName(String name){
 
