@@ -5,7 +5,7 @@
     android:id="@+id/toolBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
+    android:background="@drawable/notification_toolbar"
     android:fitsSystemWindows="true"
     android:minHeight="?attr/actionBarSize"
     app:theme="@style/AppTheme">
@@ -14,7 +14,7 @@
         android:id="@+id/back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="#00ffffff"
         android:src="@drawable/ic_arrow_back_black_24dp" />
 
     <TextView

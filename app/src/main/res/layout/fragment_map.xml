@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.a4dotsinc.profilo.MapFrag"
-    android:background="@color/backgnd">
+    android:background="#00ffffff">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
@@ -12,6 +12,7 @@
         android:id="@+id/maprecycler"
         android:orientation="horizontal"
         android:layout_marginBottom="55dp"
-        android:background="#fff"/>
+        android:layout_marginTop="55dp"
+        android:background="#00ffffff"/>
 
 </FrameLayout>

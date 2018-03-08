@@ -16,7 +16,6 @@
         android:fontFamily="@font/ranga_rold"
         android:layout_gravity="center"
         android:textColor="#fff"
-        android:shadowColor="#ff6cc450"
         android:shadowRadius="5"
         android:shadowDy="5"
         android:textSize="33dp"
