@@ -6,9 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">#000</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="colorControlActivated">#b6de1010</item>
     </style>
 
     <style name="FullscreenTheme" parent="AppTheme">
@@ -23,4 +24,8 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="MyButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">#7b46bc</item>
+        <item name="colorButtonNormal">#000000</item>
+    </style>
 </resources>

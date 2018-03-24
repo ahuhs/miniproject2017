@@ -31,7 +31,7 @@ public class CallReceiver extends BroadcastReceiver{
             final String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
             //Toast.makeText(context, number, Toast.LENGTH_SHORT).show();
             final WishRecycler wishRecycler = new WishRecycler(number);
-            //mDatabase.push().setValue(wishRecycler);
+            mDatabase.push().setValue(wishRecycler);
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

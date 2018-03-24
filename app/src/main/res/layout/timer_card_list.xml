@@ -70,7 +70,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:backgroundTint="#00ffffff"
-                android:src="@drawable/deleteimg" />
+                android:src="@drawable/ic_delete_black_24dp" />
 
             <ImageButton
                 android:id="@+id/editTime"
@@ -81,7 +81,7 @@
                 android:layout_alignStart="@+id/deleteTime"
                 android:layout_below="@+id/deleteTime"
                 android:backgroundTint="#00ffffff"
-                android:src="@drawable/eidtimg" />
+                android:src="@drawable/ic_edit_black_24dp" />
 
 
         </RelativeLayout>

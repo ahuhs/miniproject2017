@@ -13,24 +13,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -38,30 +27,23 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.github.kmenager.materialanimatedswitch.MaterialAnimatedSwitch;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 import com.suke.widget.SwitchButton;
 
 import java.net.URL;
+import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,9 +90,13 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     Toolbar toolbar;
 
+
+    BottomSheetBehavior bottomSheetBehavior;
+
     SpaceTabLayout spaceTabLayout;
     Activity aaa = MainActivity.this;
     private DatabaseReference mDatabase, mFlagedLoc;
+    private static final int ERROR_DIALOG_REQ = 9001;
     private final int REQUEST_CODE_PLACEPICKER = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +115,11 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         myReceiver = new MyReceiver();
         mapDialog = new Dialog(this);
 
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new MapFrag());
         fragmentList.add(new TimerFrag());
@@ -139,7 +130,43 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         ViewPager viewPager = (ViewPager) findViewById(R.id.content_viewer);
         final RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.mainRelative);
 
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                TextView t = findViewById(R.id.heading);
+
+                switch (position){
+                    case 0 :  //startPlacePickerActivity();
+                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                t.setText("This is Maps Page");
+                                 break;
+                    case 1 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                t.setText("This is Timer Page");
+                                break;
+                    case 2 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                t.setText("This is Home Page\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+                                break;
+                    case 3 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                t.setText("This is List Page");
+                                break;
+                    case 4 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                                t.setText("This is Settings Page");
+                                break;
+
+                    default: break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         spaceTabLayout = (SpaceTabLayout) findViewById(R.id.spaceTabLayout);
 
@@ -148,11 +175,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         spaceTabLayout.setTabFiveIcon(R.drawable.ic_settings);
 
 
+
+
         spaceTabLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (spaceTabLayout.getCurrentPosition()){
-                    case 0 :  startPlacePickerActivity();
+                    case 0 :  //startPlacePickerActivity();
+                                if(isSeviceOk()){
+                                    startActivity(new Intent(MainActivity.this, MapsActivity.class));
+                                }
                               break;
                     case 1 :   Intent toadd = new Intent(MainActivity.this, Timepic_Activity.class);
                                startActivity(toadd);
@@ -184,9 +216,27 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         imgbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "#SOON", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, String.valueOf(System.currentTimeMillis()), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public boolean isSeviceOk(){
+
+        int available  = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
+
+        if (available == ConnectionResult.SUCCESS){
+            return true;
+        }
+        else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQ);
+            dialog.show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "You can't get maps service", Toast.LENGTH_SHORT).show();
+        }
+
+        return false;
     }
 
     @Override
@@ -232,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         // Bind to the service. If the service is in foreground mode, this signals to the service
         // that since this activity is in the foreground, the service can exit foreground mode.
         bindService(new Intent(this, LocationUpdatesService.class), mServiceConnection,
-                Context.BIND_AUTO_CREATE);
+               Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -281,17 +331,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         final String MapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+lat_val+","+lon_val+"&zoom=15&size=400x120&scale=3" +
                 "&markers=color:blue%7Clabel:S%7C"+lat_val+","+lon_val+"&key=AIzaSyBVRBgrGQqX3fkEfyV3pSX_keEJbaz7Oyc";
         if (!TextUtils.isEmpty(lat_val) && !TextUtils.isEmpty(lon_val)){
-            showMapPop(lat_val, lon_val, MapUrl);
+            //showMapPop(lat_val, lon_val, MapUrl);
         }
     }
 
-    private void showMapPop(final String lat_Val,final String lon_Val,final String mapUrl) {
+    /*private void showMapPop(final String lat_Val,final String lon_Val,final String mapUrl) {
         TextView close;
         Button save;
         final EditText map_name, map_radius;
         mapDialog.setContentView(R.layout.map_selection_pop_up);
         mapDialog.show();
-        close = (TextView) mapDialog.findViewById(R.id.txtclose);
         save = (Button) mapDialog.findViewById(R.id.map_save_btn);
         map_name = (EditText) mapDialog.findViewById(R.id.map_name);
         map_radius = (EditText) mapDialog.findViewById(R.id.map_radius);
@@ -315,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             }
         });
         mapDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-    }
+    }*/
 
     @Override
     public void onTimeSet(TimePicker timePicker, int hour, int minu) {

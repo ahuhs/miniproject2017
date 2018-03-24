@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.text.format.DateFormat;
 
 import java.util.Calendar;
 
@@ -20,6 +19,7 @@ public class TimePickerFrag extends DialogFragment {
         Calendar c = Calendar.getInstance();
         int hr = c.get(Calendar.HOUR_OF_DAY);
         int min = c.get(Calendar.MINUTE);
-        return new TimePickerDialog(getActivity(), (TimePickerDialog.OnTimeSetListener) getActivity(), hr, min, false);
+        int mill = c.get(Calendar.MILLISECOND);
+        return new TimePickerDialog(getActivity(), (TimePickerDialog.OnTimeSetListener) getActivity(), hr, min,false);
     }
 }

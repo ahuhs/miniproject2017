@@ -74,12 +74,12 @@ public class MapFrag extends Fragment {
                 final String key = firebaseRecyclerAdapter.getRef(position).getKey();
                 viewHolder.Name.setText(model.getName());
                 Picasso.with(getContext()).load(model.getImage()).into(viewHolder.map_image);
+                viewHolder.map_image.setScaleType(ImageView.ScaleType.FIT_XY);
                 viewHolder.active_switch.setChecked(model.getActive());
                 mDatabase.child(key).child("key").setValue(key);
                 viewHolder.active_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        Log.d(firebaseRecyclerAdapter.getRef(position).getKey(), "position ");
                         if(b){
                             mDatabase.child(key).child("active").setValue(true);
                         }

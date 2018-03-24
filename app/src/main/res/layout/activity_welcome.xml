@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.a4dotsinc.profilo.WelcomeActivity"
-    android:background="@drawable/splash">
+    android:background="@drawable/test_back1">
 
     <TextView
         android:id="@+id/textView"
@@ -18,7 +18,7 @@
         android:text="Profilo"
         android:fontFamily="@font/ranga_rold"
         android:layout_gravity="center"
-        android:textColor="@color/common_google_signin_btn_text_light"
+        android:textColor="#fff"
         android:shadowColor="#ff6cc450"
         android:shadowRadius="5"
         android:shadowDy="5"

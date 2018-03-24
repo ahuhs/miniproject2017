@@ -3,14 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.a4dotsinc.profilo.WishlistFrag"
-    android:background="@color/backgnd">
+    android:background="#00ffffff">
 
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/numRecycler"
-        android:background="#fff"
+        android:background="#00ffffff"
+        android:paddingBottom="70dp"
          />
 
 

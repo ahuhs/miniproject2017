@@ -1,3 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.a4dotsinc.profilo.MapsActivity"
+    android:id="@+id/mapRelative"
+    android:background="#b6de1010"
+    android:fitsSystemWindows="true">
+
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -5,4 +16,64 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.a4dotsinc.profilo.MapsActivity" />
+    android:layout_marginTop="180dp"
+    tools:context="com.a4dotsinc.profilo.MapsActivity" >
+</fragment>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="122dp"
+        android:background="@drawable/map_background_style">
+
+        <ImageView
+            android:id="@+id/map_search_ic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/places_ic_search" />
+
+        <AutoCompleteTextView
+            android:id="@+id/map_search_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/location_tick"
+            android:layout_toEndOf="@+id/map_search_ic"
+            android:background="@drawable/map_background_style"
+            android:gravity="center|left"
+            android:hint="Enter the Place"
+            android:imeOptions="actionSearch"
+            android:inputType="text" />
+
+        <ImageButton
+            android:id="@+id/location_tick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="13dp"
+            android:background="#fff"
+            android:src="@drawable/ic_check_black_24dp" />
+
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/getCurrentloc"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="98dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_gps_fixed_black_24dp"
+        android:background="@drawable/gps_icon_style"/>
+
+
+</RelativeLayout>

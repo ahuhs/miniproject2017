@@ -24,9 +24,9 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="55dp"
         android:fontFamily="@font/timmana_regular"
-        android:text="Hi, "
+        android:text="WELCOME TO PROFILO"
         android:textColor="#fff"
-        android:textSize="60sp"
+        android:textSize="40sp"
         android:textStyle="bold" />
 
 </RelativeLayout>

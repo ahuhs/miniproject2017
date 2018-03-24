@@ -1,6 +1,10 @@
 package com.a4dotsinc.profilo;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +18,11 @@ import android.widget.Toast;
 import com.firebase.client.Firebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.tapadoo.alerter.Alerter;
+import com.tapadoo.alerter.OnHideAlertListener;
+
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public class Timepic_Activity extends AppCompatActivity  implements TimePickerDialog.OnTimeSetListener{
 
@@ -22,7 +31,7 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
     FloatingActionButton sub;
     Firebase timeurl;
     DatabaseReference mDatabase;
-    String ss;
+    long st_milli, sto_milli;
     boolean hh=true;
 
     @Override
@@ -60,8 +69,20 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
             @Override
             public void onClick(View view) {
                 addtobase();
-                Toast.makeText(Timepic_Activity.this, "Time Added!!",Toast.LENGTH_SHORT).show();
-                finish();
+                Alerter.create(Timepic_Activity.this)
+                        .setTitle("Time Added!")
+                        .setBackgroundColorRes(R.color.colorAccent)
+                        .setIcon(R.drawable.ic_check_black_24dp)
+                        .setDuration(2000)
+                        .setOnHideListener(new OnHideAlertListener() {
+                            @Override
+                            public void onHide() {
+                                active(st_milli);
+                                active(sto_milli);
+                                finish();
+                            }
+                        })
+                        .show();
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
@@ -74,18 +95,44 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
     }
 
     private void addtobase() {
-        TimeRecycler timeRecycler = new TimeRecycler(st.getText().toString(),sto.getText().toString(), true);
+        TimeRecycler timeRecycler = new TimeRecycler(st.getText().toString(),sto.getText().toString(),st_milli, sto_milli, true);
         mDatabase.push().setValue(timeRecycler);
+    }
+
+    private void active(long time){
+        Intent i = new Intent(Timepic_Activity.this, Timed_Changes.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, i, 0);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
     }
 
     @Override
     public void onTimeSet(TimePicker timePicker, int i, int i1) {
+        long milliseconds = TimeUnit.SECONDS.toMillis(TimeUnit.HOURS.toSeconds(i) + TimeUnit.MINUTES.toSeconds(i1));
+//      Time in Milliseconds !!!
+      /*  Calendar rightNow = Calendar.getInstance();
+        long offset = rightNow.get(Calendar.ZONE_OFFSET) +
+                rightNow.get(Calendar.DST_OFFSET);
+        long sinceMid = (milliseconds+ offset) % (24 * 60 * 60 * 1000);
+        Toast.makeText(this, String.valueOf(milliseconds), Toast.LENGTH_SHORT).show();*/
+
         if (!hh){
-            st.setText(i+" "+i1);
+            if ((0<=i)&&(i<=11)){
+                st.setText(i+":"+i1+":AM");
+            }
+            if ((12<=i)&&(i<=23)){
+                st.setText(i-12+":"+i1+":PM");
+            }
+            st_milli = milliseconds;
         }
         else {
-            sto.setText(i+" "+i1);
-
+            if ((0<=i)&&(i<=11)){
+                sto.setText(i+":"+i1+":AM");
+            }
+            if ((12<=i)&&(i<=23)){
+                sto.setText(i-12+":"+i1+":PM");
+            }
+            sto_milli = milliseconds;
         }
     }
 }
