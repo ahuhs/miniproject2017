@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                                 t.setText("This is Timer Page");
                                 break;
                     case 2 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                                t.setText("This is Home Page\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+                                t.setText("This is Home Page\n\n\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
                                 break;
                     case 3 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                                 t.setText("This is List Page");
@@ -391,9 +391,10 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
     private void setButtonsState(boolean requestingLocationUpdates) {
         if (requestingLocationUpdates) {
-            materialAnimatedSwitch.setEnabled(true);
+            Toast.makeText(mService, String.valueOf(requestingLocationUpdates), Toast.LENGTH_SHORT).show();
+
         } else {
-            materialAnimatedSwitch.setEnabled(false);
+
         }
     }
 }

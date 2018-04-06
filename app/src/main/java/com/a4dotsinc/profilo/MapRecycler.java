@@ -12,18 +12,28 @@ public class MapRecycler {
     private float radius;
     private String imgUrl;
     private Boolean active;
+    String key;
 
     public MapRecycler(){
 
     }
 
-    public MapRecycler( String lat, String lon, String name, float radius, String image, Boolean active) {
+    public MapRecycler( String lat, String lon, String name, float radius, String image, Boolean active,String key) {
         this.lat = lat;
         this.lon = lon;
         this.name = name;
         this.imgUrl = image;
         this.radius = radius;
         this.active = active;
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Boolean getActive() {

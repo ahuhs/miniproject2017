@@ -345,8 +345,10 @@ private AdapterView.OnItemClickListener mAutocompleteClickListener = new Adapter
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapRecycler mapRecycler  = new MapRecycler(lat_Val, lon_Val, map_name.getText().toString(), Float.parseFloat(String.valueOf(map_radius.getValue())), mapUrl, false);
-                mDatabase.push().setValue(mapRecycler);
+                String k = mDatabase.push().getKey();
+
+                MapRecycler mapRecycler  = new MapRecycler(lat_Val, lon_Val, map_name.getText().toString(), Float.parseFloat(String.valueOf(map_radius.getValue())), mapUrl, false,k);
+                mDatabase.child(k).setValue(mapRecycler);
                 mFlagedLoc.child("flag").setValue("0");
                 mapDialog.dismiss();
                 finish();

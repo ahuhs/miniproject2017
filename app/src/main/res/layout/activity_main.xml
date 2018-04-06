@@ -50,7 +50,6 @@
             android:id="@+id/bottom_sheet"
             android:layout_width="match_parent"
             android:layout_height="350dp"
-            android:elevation="50dp"
             android:background="@drawable/material_bottom_sheet_style"
             app:layout_behavior="@string/bottom_sheet_behavior"
             app:behavior_hideable="true"
@@ -60,8 +59,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="16dp"
+                android:fontFamily="@font/timmana_regular"
                 android:id="@+id/heading"
-                android:textSize="28dp"
+                android:textSize="17dp"
+                android:textColor="#fff"
                 android:text="This is a Bottom Text"/>
 
 

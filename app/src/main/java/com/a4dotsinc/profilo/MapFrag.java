@@ -21,9 +21,18 @@ import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import net.idik.lib.slimadapter.SlimAdapter;
+import net.idik.lib.slimadapter.SlimInjector;
+import net.idik.lib.slimadapter.viewinjector.IViewInjector;
+
+import java.util.ArrayList;
 
 
 /**
@@ -34,6 +43,7 @@ public class MapFrag extends Fragment {
     private RecyclerView recyclerView;
 
     private DatabaseReference mDatabase;
+    ArrayList<MapRecycler> maps;
 
     private FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder> firebaseRecyclerAdapter;
 
@@ -57,13 +67,76 @@ public class MapFrag extends Fragment {
         recyclerView = (RecyclerView)view.findViewById(R.id.maprecycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+         maps = new ArrayList<>();
+
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                if(dataSnapshot.exists()){
+                    maps.clear();
+                    for(DataSnapshot snap: dataSnapshot.getChildren()){
+                        MapRecycler map = snap.getValue(MapRecycler.class);
+                        maps.add(map);
+                    }
+                    SlimAdapter.create().register(R.layout.map_card_list, new SlimInjector<MapRecycler>() {
+                        @Override
+                        public void onInject(MapRecycler model, IViewInjector injector) {
+                            injector.text(R.id.map_name,model.getName());
+                            ImageView map_image;
+                            Switch active_switch;
+                            ImageButton delete_map;
+
+                            final String key = model.getKey();
+
+                            map_image = (ImageView)injector.findViewById(R.id.map_img);
+                            active_switch = (Switch)injector.findViewById(R.id.active_state);
+                            delete_map = (ImageButton) injector.findViewById(R.id.map_delete);
+
+                            Picasso.with(getContext()).load(model.getImage()).into(map_image);
+                            map_image.setScaleType(ImageView.ScaleType.FIT_XY);
+                            active_switch.setChecked(model.getActive());
+                            active_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                @Override
+                                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                    if(b){
+                                        mDatabase.child(key).child("active").setValue(true);
+                                    }
+                                    else {
+                                        mDatabase.child(key).child("active").setValue(false);
+                                    }
+                                }
+                            });
+                            delete_map.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    mDatabase.child(key).removeValue();
+                                }
+                            });
+
+                        }
+                    }).updateData(maps)
+                            .attachTo(recyclerView);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder>(
+
+        /*firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder>(
                 MapRecycler.class,
                 R.layout.map_card_list,
                 MapFrag.MapViewHolder.class,
@@ -97,7 +170,7 @@ public class MapFrag extends Fragment {
             }
         };
 
-        recyclerView.setAdapter(firebaseRecyclerAdapter);
+        recyclerView.setAdapter(firebaseRecyclerAdapter);*/
 
     }
     public static class MapViewHolder extends RecyclerView.ViewHolder{

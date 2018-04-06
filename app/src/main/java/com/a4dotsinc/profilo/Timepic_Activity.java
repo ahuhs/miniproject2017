@@ -30,6 +30,7 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
     TextView st, sto;
     FloatingActionButton sub;
     Firebase timeurl;
+    private int st_hr, st_min, sto_hr, sto_min;
     DatabaseReference mDatabase;
     long st_milli, sto_milli;
     boolean hh=true;
@@ -77,8 +78,6 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
                         .setOnHideListener(new OnHideAlertListener() {
                             @Override
                             public void onHide() {
-                                active(st_milli);
-                                active(sto_milli);
                                 finish();
                             }
                         })
@@ -95,15 +94,9 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
     }
 
     private void addtobase() {
-        TimeRecycler timeRecycler = new TimeRecycler(st.getText().toString(),sto.getText().toString(),st_milli, sto_milli, true);
-        mDatabase.push().setValue(timeRecycler);
-    }
-
-    private void active(long time){
-        Intent i = new Intent(Timepic_Activity.this, Timed_Changes.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, i, 0);
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+        String k = mDatabase.push().getKey();
+        TimeRecycler timeRecycler = new TimeRecycler(st.getText().toString(),sto.getText().toString(),st_hr, st_min, sto_hr, sto_min, false, k);
+        mDatabase.child(k).setValue(timeRecycler);
     }
 
     @Override
@@ -124,6 +117,7 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
                 st.setText(i-12+":"+i1+":PM");
             }
             st_milli = milliseconds;
+            st_hr = i; st_min = i1;
         }
         else {
             if ((0<=i)&&(i<=11)){
@@ -133,6 +127,7 @@ public class Timepic_Activity extends AppCompatActivity  implements TimePickerDi
                 sto.setText(i-12+":"+i1+":PM");
             }
             sto_milli = milliseconds;
+            sto_hr = i; sto_min = i1;
         }
     }
 }

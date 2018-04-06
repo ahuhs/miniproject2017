@@ -9,34 +9,63 @@ public class TimeRecycler {
     private String starttime;
     private String endtime;
     private  Boolean active;
-    private long st_milli, sto_milli;
+    private String key;
+    private int st_hr, st_min, sto_hr, sto_min;
 
     public TimeRecycler(){
 
     }
 
-    public TimeRecycler(String start, String end, long st_milli, long sto_milli, Boolean active) {
-        this.starttime = start;
-        this.endtime = end;
+
+    public TimeRecycler(String starttime, String endtime, int st_hr, int st_min, int sto_hr, int sto_min, Boolean active, String key) {
+        this.starttime = starttime;
+        this.endtime = endtime;
         this.active = active;
-        this.st_milli = st_milli;
-        this.sto_milli = sto_milli;
+        this.st_hr = st_hr;
+        this.st_min = st_min;
+        this.sto_hr = sto_hr;
+        this.sto_min = sto_min;
+        this.key = key;
     }
 
-    public long getSt_milli() {
-        return st_milli;
+    public String getKey() {
+        return key;
     }
 
-    public void setSt_milli(long st_milli) {
-        this.st_milli = st_milli;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public long getSto_milli() {
-        return sto_milli;
+    public int getSt_hr() {
+        return st_hr;
     }
 
-    public void setSto_milli(long sto_milli) {
-        this.sto_milli = sto_milli;
+    public void setSt_hr(int st_hr) {
+        this.st_hr = st_hr;
+    }
+
+    public int getSt_min() {
+        return st_min;
+    }
+
+    public void setSt_min(int st_min) {
+        this.st_min = st_min;
+    }
+
+    public int getSto_hr() {
+        return sto_hr;
+    }
+
+    public void setSto_hr(int sto_hr) {
+        this.sto_hr = sto_hr;
+    }
+
+    public int getSto_min() {
+        return sto_min;
+    }
+
+    public void setSto_min(int sto_min) {
+        this.sto_min = sto_min;
     }
 
     public String getStarttime() {
