@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.a4dotsinc.profilo.WelcomeActivity"
-    android:background="@drawable/test_back1">
+    android:background="#fff">
 
     <TextView
         android:id="@+id/textView"
@@ -18,7 +18,7 @@
         android:text="Profilo"
         android:fontFamily="@font/ranga_rold"
         android:layout_gravity="center"
-        android:textColor="#fff"
+        android:textColor="#000000"
         android:shadowColor="#ff6cc450"
         android:shadowRadius="5"
         android:shadowDy="5"
@@ -54,7 +54,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="with"
-        android:textColor="#A7FFEB"
+        android:fontFamily="@font/robotoslab_regular"
+        android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -90,7 +91,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="By 4dotsInc."
-        android:textColor="#A7FFEB"
+        android:textColor="#000000"
+        android:fontFamily="@font/robotoslab_regular"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

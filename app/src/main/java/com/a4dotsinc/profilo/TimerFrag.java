@@ -31,7 +31,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import net.idik.lib.slimadapter.SlimAdapter;
+import net.idik.lib.slimadapter.SlimInjector;
+import net.idik.lib.slimadapter.viewinjector.IViewInjector;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 import static android.content.Context.ALARM_SERVICE;
 
@@ -46,9 +52,9 @@ public class TimerFrag extends Fragment {
     private DatabaseReference mDatabase;
     private FirebaseRecyclerAdapter<TimeRecycler, TimeViewHolder> firebaseRecyclerAdapter;
     public AlarmManager alarmManager;
-
-    private String key;
-
+    Context applicationContext = MainActivity.getContextOfApplication();
+    String unique_id = android.provider.Settings.Secure.getString(applicationContext.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+    ArrayList<TimeRecycler> time;
 
 
     public TimerFrag() {
@@ -65,14 +71,118 @@ public class TimerFrag extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Timer").child("testuser");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Timer").child(unique_id);
 
         recyclerView = (RecyclerView)view.findViewById(R.id.timerecycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        time = new ArrayList<>();
+
+        /*mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()) {
+                    time.clear();
+                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                        TimeRecycler times = snap.getValue(TimeRecycler.class);
+                        time.add(times);
+                    }
+                    SlimAdapter.create().register(R.layout.timer_card_list, new SlimInjector<TimeRecycler>() {
+                        @Override
+                        public void onInject(final TimeRecycler model, IViewInjector injector) {
+                            final String key = model.getKey();//"-L8Xn0V-HmODxevEGcVy";
+                            TextView start, stop, active_text_header;
+                            ImageButton deleteTime;
+                            Switch active_switch;
+                            RelativeLayout relativeLayout;
+
+                            start = (TextView)injector.findViewById(R.id.startTimer);
+                            active_switch = (Switch)injector.findViewById(R.id.timer_active_switch);
+                            deleteTime = (ImageButton)injector.findViewById(R.id.deleteTime);
+                            stop = (TextView)injector.findViewById(R.id.endTimer);
+                            active_text_header = (TextView)injector.findViewById(R.id.time_header_text);
+                            relativeLayout = (RelativeLayout)injector.findViewById(R.id.time_header);
+                            start.setText(model.getStarttime());
+                            stop.setText(model.getEndtime());
+                            Log.d(model.getStarttime(), "start");
+                            Log.d(model.getEndtime(), "stop");
+
+                            deleteTime.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    mDatabase.child(key).removeValue();
+                                }
+                            });
+                            active_switch.setChecked(model.getActive());
+                            if (model.getActive()){
+                                active_text_header.setText("Active");
+                                relativeLayout.setBackgroundColor(Color.parseColor("#00e9af"));
+                            }
+                            else{
+                                active_text_header.setText("Not Active");
+                                relativeLayout.setBackgroundColor(Color.parseColor("#00a1d2"));
+                            }
+
+                            active_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                @Override
+                                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                    if (b){
+                                        Random r = new Random();
+                                        int random_pos = r.nextInt(80 - 65) + 65;
+                                        mDatabase.child(key).child("active").setValue(true);
+                                        mDatabase.child(key).child("random_id").setValue(random_pos);
+                                        mDatabase.child(key).addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if(dataSnapshot.exists()){
+
+                                                    active(Integer.parseInt(dataSnapshot.child("st_hr").getValue().toString()),
+                                                            Integer.parseInt(dataSnapshot.child("st_min").getValue().toString()),
+                                                            Integer.parseInt(dataSnapshot.child("random_id").getValue().toString()+"0"));
+                                                    active(Integer.parseInt(dataSnapshot.child("sto_hr").getValue().toString()),
+                                                            Integer.parseInt(dataSnapshot.child("sto_min").getValue().toString()),
+                                                            Integer.parseInt(dataSnapshot.child("random_id").getValue().toString()+"1"));
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        mDatabase.child(key).child("active").setValue(false);
+                                        mDatabase.child(key).addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                deactivate(Integer.parseInt((dataSnapshot.child("random_id").getValue())+"0"));
+                                                deactivate(Integer.parseInt((dataSnapshot.child("random_id").getValue())+"1"));
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+                                }
+                        });
+                        }
+                    }).updateData(time)
+                            .attachTo(recyclerView);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        */
     }
 
     @Override
@@ -86,20 +196,21 @@ public class TimerFrag extends Fragment {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(TimeViewHolder viewHolder, TimeRecycler model, final int position) {
-                key = firebaseRecyclerAdapter.getRef(position).getKey();//"-L8Xn0V-HmODxevEGcVy";
+            protected void populateViewHolder(TimeViewHolder viewHolder, TimeRecycler model,final int position) {
+                final String[] key = {firebaseRecyclerAdapter.getRef(position).getKey()};//"-L8Xn0V-HmODxevEGcVy";
                 viewHolder.start.setText(model.getStarttime());
                 viewHolder.stop.setText(model.getEndtime());
                 Log.d(model.getStarttime(), "start");
                 Log.d(model.getEndtime(), "stop");
 
-                viewHolder.deleteTime.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        key = firebaseRecyclerAdapter.getRef(position).getKey();
-                        mDatabase.child(key).removeValue();
-                    }
-                });
+                    viewHolder.deleteTime.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            key[0] = firebaseRecyclerAdapter.getRef(position).getKey();
+                            mDatabase.child(key[0]).removeValue();
+                        }
+                    });
+
                 viewHolder.active_switch.setChecked(model.getActive());
                 if (model.getActive()){
                     viewHolder.active_text_header.setText("Active");
@@ -109,24 +220,30 @@ public class TimerFrag extends Fragment {
                     viewHolder.active_text_header.setText("Not Active");
                     viewHolder.relativeLayout.setBackgroundColor(Color.parseColor("#00a1d2"));
                 }
+
                 viewHolder.active_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, final boolean b) {
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                         if (b){
-                            key = firebaseRecyclerAdapter.getRef(position).getKey();
-                            mDatabase.child(key).child("active").setValue(true);
-                            mDatabase.child(key).child("position").setValue(position+1);
-                            mDatabase.child(key).addValueEventListener(new ValueEventListener() {
+                            Random r = new Random();
+                            int random_pos = r.nextInt(80 - 65) + 65;
+                            mDatabase.child(key[0]).child("active").setValue(true);
+                            mDatabase.child(key[0]).child("position").setValue(random_pos);
+                            mDatabase.child(key[0]).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if(dataSnapshot.exists()){
-                                        Log.d(dataSnapshot.child("active").getValue().toString()+String.valueOf(b)+position, "Active");
-                                        active(Integer.parseInt(dataSnapshot.child("st_hr").getValue().toString()),
-                                                Integer.parseInt(dataSnapshot.child("st_min").getValue().toString()),
-                                                Integer.parseInt(dataSnapshot.child("position").getValue().toString()+"0"));
-                                        active(Integer.parseInt(dataSnapshot.child("sto_hr").getValue().toString()),
-                                                Integer.parseInt(dataSnapshot.child("sto_min").getValue().toString()),
-                                                Integer.parseInt(dataSnapshot.child("position").getValue().toString()+"1"));
+                                        try {
+                                            active(Integer.parseInt(dataSnapshot.child("st_hr").getValue().toString()),
+                                                    Integer.parseInt(dataSnapshot.child("st_min").getValue().toString()),
+                                                    Integer.parseInt(dataSnapshot.child("position").getValue().toString()+"0"));
+                                            active(Integer.parseInt(dataSnapshot.child("sto_hr").getValue().toString()),
+                                                    Integer.parseInt(dataSnapshot.child("sto_min").getValue().toString()),
+                                                    Integer.parseInt(dataSnapshot.child("position").getValue().toString()+"1"));
+                                        }
+                                        catch (Exception e){
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
 
@@ -137,11 +254,25 @@ public class TimerFrag extends Fragment {
                             });
                         }
                         else {
-                            key = firebaseRecyclerAdapter.getRef(position).getKey();
-                            Log.d(key+position, "key");
-                            mDatabase.child(key).child("active").setValue(false);
-                            deactivate(Integer.parseInt((position+1)+"0"));
-                            deactivate(Integer.parseInt((position+1)+"1"));
+                            Log.d(key[0] +position, "key");
+                            mDatabase.child(key[0]).child("active").setValue(false);
+                            mDatabase.child(key[0]).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    try{
+                                        deactivate(Integer.parseInt((dataSnapshot.child("position").getValue())+"0"));
+                                        deactivate(Integer.parseInt((dataSnapshot.child("position").getValue())+"1"));
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     }
                 });
@@ -167,6 +298,8 @@ public class TimerFrag extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), position, i, PendingIntent.FLAG_UPDATE_CURRENT);
         pendingIntent.cancel();
     }
+
+
     public static class TimeViewHolder extends RecyclerView.ViewHolder{
 
         TextView start, stop, active_text_header;
@@ -178,14 +311,14 @@ public class TimerFrag extends Fragment {
         public TimeViewHolder(View itemView) {
             super(itemView);
 
+
             start = (TextView)itemView.findViewById(R.id.startTimer);
-            stop = (TextView)itemView.findViewById(R.id.endTimer);
-            deleteTime = (ImageButton)itemView.findViewById(R.id.deleteTime);
             active_switch = (Switch)itemView.findViewById(R.id.timer_active_switch);
+            deleteTime = (ImageButton)itemView.findViewById(R.id.deleteTime);
+            stop = (TextView)itemView.findViewById(R.id.endTimer);
             active_text_header = (TextView)itemView.findViewById(R.id.time_header_text);
             relativeLayout = (RelativeLayout)itemView.findViewById(R.id.time_header);
         }
 
+        }
     }
-
-}

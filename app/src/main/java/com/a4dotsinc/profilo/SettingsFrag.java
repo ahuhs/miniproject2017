@@ -37,24 +37,8 @@ public class SettingsFrag extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
 
-        final Button start = (Button)view.findViewById(R.id.start);
-        final Button stop = (Button)view.findViewById(R.id.stop);
 
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ServiceWorker.s = getActivity();
-                Intent intent = new Intent(getContext(), ServiceWorker.class);
-                getActivity().startService(intent);
-            }
-        });
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), ServiceWorker.class);
-                getActivity().stopService(intent);
-            }
-        });
+
 
     }
 

@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -80,13 +82,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
     private Dialog mapDialog;
     private DatabaseReference mDatabase, mFlagedLoc;
-
+    private LatLng mCenterLatLong;
     private GeoDataClient mGeoDataClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(
             new LatLng(-40, -168), new LatLng(71, 136)
     );
     private String MapUrl = "";
-
+    private LatLng latLng2;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -108,6 +110,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             init();
         }
+
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                Log.d("Camera postion change" + "", cameraPosition + "");
+                mCenterLatLong = cameraPosition.target;
+                mMap.clear();
+                MarkerOptions options = new MarkerOptions()
+                        .position(mCenterLatLong);
+                mMap.addMarker(options);
+
+                latLng2 = mCenterLatLong;
+
+            }
+        });
+
     }
 
 
@@ -120,13 +138,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLoc = (ImageButton) findViewById(R.id.getCurrentloc);
         confirmLoc = (ImageButton)findViewById(R.id.location_tick);
         mapDialog = new Dialog(this);
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
-        mFlagedLoc = FirebaseDatabase.getInstance().getReference().child("FlagedLoc").child("TestUser");
+        String unique_id = android.provider.Settings.Secure.getString(getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child(unique_id);
+        mFlagedLoc = FirebaseDatabase.getInstance().getReference().child("FlagedLoc").child(unique_id);
+
 
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
         getLocationPermissions();
         init();
+
+        confirmLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+latLng2.latitude+","+latLng2.longitude+"&zoom=15&size=500x220&scale=3" +
+                        "&markers=color:blue%7Clabel:S%7C"+latLng2.latitude+","+latLng2.longitude+"&key=AIzaSyBVRBgrGQqX3fkEfyV3pSX_keEJbaz7Oyc";
+
+                //Log.i("MapsActivity", "Place details received: " + title);
+                showMapPop(String.valueOf(latLng2.latitude), String.valueOf(latLng2.longitude), MapUrl);
+            }
+        });
+
     }
 
     public void init() {
@@ -204,27 +236,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void moveCamera(final LatLng latLng, float zoom, final String title) {
 
+        latLng2 = latLng;
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng)      // Sets the center of the map to Mountain View
+                .zoom(17)                   // Sets the zoom
+                .bearing(90)                // Sets the orientation of the camera to east
+                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         if (!title.equals("My Location")) {
             MarkerOptions options = new MarkerOptions()
                     .position(latLng)
                     .title(title);
             mMap.addMarker(options);
+
             hideKeyboard();
         }
-
-        confirmLoc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MapUrl = "https://maps.googleapis.com/maps/api/staticmap?center="+latLng.latitude+","+latLng.longitude+"&zoom=15&size=500x220&scale=3" +
-                        "&markers=color:blue%7Clabel:S%7C"+latLng.latitude+","+latLng.longitude+"&key=AIzaSyBVRBgrGQqX3fkEfyV3pSX_keEJbaz7Oyc";
-
-                Log.i("MapsActivity", "Place details received: " + title);
-                showMapPop(String.valueOf(latLng.latitude), String.valueOf(latLng.longitude), MapUrl);
-            }
-        });
-
 
     }
 

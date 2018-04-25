@@ -30,9 +30,11 @@ import com.squareup.picasso.Picasso;
 
 import net.idik.lib.slimadapter.SlimAdapter;
 import net.idik.lib.slimadapter.SlimInjector;
+import net.idik.lib.slimadapter.SlimViewHolder;
 import net.idik.lib.slimadapter.viewinjector.IViewInjector;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -44,7 +46,9 @@ public class MapFrag extends Fragment {
 
     private DatabaseReference mDatabase;
     ArrayList<MapRecycler> maps;
-
+    SlimAdapter slimAdapter;
+    Context applicationContext = MainActivity.getContextOfApplication();
+    String unique_id = android.provider.Settings.Secure.getString(applicationContext.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
     private FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder> firebaseRecyclerAdapter;
 
 
@@ -63,13 +67,13 @@ public class MapFrag extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child(unique_id);
         recyclerView = (RecyclerView)view.findViewById(R.id.maprecycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
          maps = new ArrayList<>();
 
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        /*mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -80,7 +84,7 @@ public class MapFrag extends Fragment {
                         MapRecycler map = snap.getValue(MapRecycler.class);
                         maps.add(map);
                     }
-                    SlimAdapter.create().register(R.layout.map_card_list, new SlimInjector<MapRecycler>() {
+                    slimAdapter.create().register(R.layout.map_card_list, new SlimInjector<MapRecycler>() {
                         @Override
                         public void onInject(MapRecycler model, IViewInjector injector) {
                             injector.text(R.id.map_name,model.getName());
@@ -102,6 +106,7 @@ public class MapFrag extends Fragment {
                                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                                     if(b){
                                         mDatabase.child(key).child("active").setValue(true);
+
                                     }
                                     else {
                                         mDatabase.child(key).child("active").setValue(false);
@@ -112,11 +117,13 @@ public class MapFrag extends Fragment {
                                 @Override
                                 public void onClick(View view) {
                                     mDatabase.child(key).removeValue();
+                                    slimAdapter.notifyDataSetChanged();
                                 }
                             });
 
                         }
-                    }).updateData(maps)
+                    }) .enableDiff()
+                            .updateData(maps)
                             .attachTo(recyclerView);
                 }
 
@@ -127,7 +134,7 @@ public class MapFrag extends Fragment {
 
             }
         });
-
+*/
 
     }
 
@@ -136,7 +143,7 @@ public class MapFrag extends Fragment {
         super.onStart();
 
 
-        /*firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder>(
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<MapRecycler, MapFrag.MapViewHolder>(
                 MapRecycler.class,
                 R.layout.map_card_list,
                 MapFrag.MapViewHolder.class,
@@ -161,16 +168,20 @@ public class MapFrag extends Fragment {
                         }
                     }
                 });
-                viewHolder.delete_map.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mDatabase.child(key).removeValue();
-                    }
-                });
+                try{
+                    viewHolder.delete_map.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mDatabase.child(key).removeValue();
+                        }
+                    });
+                }catch (Exception e){
+
+                }
             }
         };
 
-        recyclerView.setAdapter(firebaseRecyclerAdapter);*/
+        recyclerView.setAdapter(firebaseRecyclerAdapter);
 
     }
     public static class MapViewHolder extends RecyclerView.ViewHolder{

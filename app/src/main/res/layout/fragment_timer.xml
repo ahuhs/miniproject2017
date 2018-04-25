@@ -6,11 +6,21 @@
     tools:context="com.a4dotsinc.profilo.TimerFrag">
 
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TIME"
+        android:textColor="#000000"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:fontFamily="@font/robotoslab_bold"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/timerecycler"
         android:layout_marginTop="55dp"
-        android:layout_marginBottom="55dp"
+        android:layout_marginBottom="10dp"
         android:background="#00ffffff"/>
 </FrameLayout>

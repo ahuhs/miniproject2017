@@ -1,95 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="350dp"
     android:layout_height="430dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
     android:padding="5dp"
-    android:elevation="5dp">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#b6de1010">
+    android:background="#00ffffff">
 
-    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/pop_map_img"
-        android:layout_width="156dp"
-        android:layout_height="156dp"
-        android:layout_margin="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        app:civ_border_color="#FF000000"
-        app:civ_border_width="2dp" />
-
-    <com.github.florent37.materialtextfield.MaterialTextField
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pop_map_img"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
-        android:layout_margin="5dp"
-        app:mtf_labelColor="#fff"
-        android:id="@+id/map_name1"
-        app:mtf_image="@drawable/ic_add_location_black_36dp"
-        >
+        android:layout_height="match_parent"
+        android:background="@drawable/universal_bgnd_style">
 
-        <EditText
-            android:id="@+id/map_name"
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/pop_map_img"
+            android:layout_width="156dp"
+            android:layout_height="156dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp" />
+
+        <com.github.florent37.materialtextfield.MaterialTextField
+            android:id="@+id/map_name1"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pop_map_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-10dp"
+            app:mtf_image="@drawable/ic_add_location_black_36dp"
+            app:mtf_labelColor="#000000">
 
-            android:hint="Name Of Place"
-            android:textColor="#000"
-            android:textSize="15sp" />
+            <EditText
+                android:id="@+id/map_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
 
-    </com.github.florent37.materialtextfield.MaterialTextField>
+                android:hint="Name Of Place"
+                android:textColor="#000"
+                android:textSize="15sp" />
 
-    <com.rey.material.widget.Slider
-        android:id="@+id/map_radius"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/map_name1"
-        android:gravity="center"
-        android:hint="Raduis Of Activity"
-        android:padding="8dp"
-        app:sl_discreteMode="true"
-        app:sl_maxValue="100"
-        app:sl_minValue="0"
-        app:sl_primaryColor="#000"
-        app:sl_secondaryColor="#000"
-        app:sl_stepValue="10"/>
+        </com.github.florent37.materialtextfield.MaterialTextField>
 
-    <Button
-        android:id="@+id/map_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/map_name1"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="36dp"
-        android:layout_marginEnd="49dp"
-        android:theme="@style/MyButton"
-        android:clickable="true"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="ADD"
-        android:textColor="#ffffff" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/map_name1"
+            android:layout_below="@+id/map_name1"
+            android:text="Radius Of Activity" />
 
-    <Button
-        android:id="@+id/map_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/map_add"
-        android:layout_alignBottom="@+id/map_add"
-        android:layout_alignStart="@+id/map_radius"
-        android:layout_marginStart="50dp"
-        android:theme="@style/MyButton"
-        android:clickable="true"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="CANCEL"
-        android:textColor="#ffffff" />
+        <com.rey.material.widget.Slider
+            android:id="@+id/map_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="71dp"
+            android:gravity="center"
+            android:hint="Raduis Of Activity"
+            android:padding="8dp"
+            app:sl_discreteMode="true"
+            app:sl_maxValue="100"
+            app:sl_minValue="0"
+            app:sl_primaryColor="#000"
+            app:sl_secondaryColor="#000"
+            app:sl_stepValue="10" />
+
+        <Button
+            android:id="@+id/map_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="17dp"
+            android:layout_marginEnd="68dp"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="ADD"
+            android:textColor="#ffffff"
+            android:theme="@style/MyButton" />
+
+        <Button
+            android:id="@+id/map_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="18dp"
+            android:layout_toStartOf="@+id/map_add"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="CANCEL"
+            android:textColor="#ffffff"
+            android:theme="@style/MyButton" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
-
-</android.support.v7.widget.CardView>

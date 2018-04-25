@@ -10,27 +10,7 @@
     android:layout_height="match_parent"
     android:background="#00ffffff">
 
-    <Button
-        android:id="@+id/start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/stop"
-        android:layout_alignStart="@+id/stop"
-        android:layout_marginBottom="52dp"
-        android:onClick="startservice"
-        android:textColor="#000"
-        android:text="Start Service" />
 
-    <Button
-        android:id="@+id/stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:textColor="#000"
-        android:layout_marginBottom="200dp"
-        android:onClick="stopservice"
-        android:text="Stop Service" />
 
 </RelativeLayout>
 

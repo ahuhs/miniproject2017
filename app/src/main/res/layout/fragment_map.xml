@@ -6,12 +6,22 @@
     tools:context="com.a4dotsinc.profilo.MapFrag"
     android:background="#00ffffff">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SPACE"
+        android:textColor="#000000"
+        android:textSize="30dp"
+        android:textAlignment="center"
+        android:fontFamily="@font/robotoslab_bold"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/maprecycler"
         android:orientation="horizontal"
-        android:layout_marginBottom="55dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="55dp"
         android:background="#00ffffff" />
 

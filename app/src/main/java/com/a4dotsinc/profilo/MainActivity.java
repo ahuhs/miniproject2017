@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
@@ -20,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -38,8 +40,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.suke.widget.SwitchButton;
 
 import java.net.URL;
@@ -83,6 +88,12 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         }
     };
 
+    public static Context contextOfApplication;
+    public static Context getContextOfApplication()
+    {
+        return contextOfApplication;
+    }
+
     public SwitchButton switchButton;
     public MaterialAnimatedSwitch materialAnimatedSwitch;
 
@@ -95,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     SpaceTabLayout spaceTabLayout;
     Activity aaa = MainActivity.this;
-    private DatabaseReference mDatabase, mFlagedLoc;
+    private DatabaseReference mDatabase, mFlagedLoc, mDatabase2;
     private static final int ERROR_DIALOG_REQ = 9001;
     private final int REQUEST_CODE_PLACEPICKER = 1;
     @Override
@@ -107,10 +118,27 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         getSupportActionBar().setTitle(null);
         ActivityCompat.requestPermissions(MainActivity.this, new  String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
+        mDatabase2 = FirebaseDatabase.getInstance().getReference().child("toggle");
         mFlagedLoc = FirebaseDatabase.getInstance().getReference().child("FlagedLoc").child("TestUser");
         ImageButton imgbtn = (ImageButton)findViewById(R.id.login_img_btn);
 
         materialAnimatedSwitch = (MaterialAnimatedSwitch)findViewById(R.id.toggle_loc);
+
+        contextOfApplication = getApplicationContext();
+
+
+        mDatabase2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         myReceiver = new MyReceiver();
         mapDialog = new Dialog(this);
@@ -142,20 +170,19 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
                 switch (position){
                     case 0 :  //startPlacePickerActivity();
-                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                                t.setText("This is Maps Page");
+                                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                                t.setText("Space\n\n\nChoose Places on the map where Profilo will be automatically activated");
                                  break;
-                    case 1 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                                t.setText("This is Timer Page");
+                    case 1 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                                t.setText("Time\n\n\nSet the Start-Time and Stop-Time for Profilo to get activated automatically");
                                 break;
-                    case 2 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                                t.setText("This is Home Page\n\n\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+                    case 2 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                                t.setText("Profilo\n\n\nSimplifies Your Daily Tasks");
                                 break;
-                    case 3 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                                t.setText("This is List Page");
+                    case 3 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                                t.setText("Wish\n\n\nSelect the Contacts from whom you want to hear from");
                                 break;
-                    case 4 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                                t.setText("This is Settings Page");
+                    case 4 :    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                                 break;
 
                     default: break;
@@ -189,10 +216,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                     case 1 :   Intent toadd = new Intent(MainActivity.this, Timepic_Activity.class);
                                startActivity(toadd);
                                break;
-                    case 2 :  Toast.makeText(MainActivity.this, Html.fromHtml("<big><b>coded </b></big><small><i>with </i></small>")+"❤", Toast.LENGTH_SHORT).show();
-
-                    case 3 :
-                    case 4 :
+                    case 2 :break;
+                    case 3 :break;
+                    case 4 :  Toast.makeText(MainActivity.this, Html.fromHtml("<big><b>coded </b></big><small><i>with </i></small>")+"❤", Toast.LENGTH_SHORT).show();
 
                     default: break;
                 }
@@ -271,9 +297,11 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
                     startActivity(intent);}
                 if(isChecked){
+                                mDatabase2.setValue(true);
                                 mService.requestLocationUpdates();
                            }
-                            else {
+                else {
+                                mDatabase2.setValue(false);
                                 mService.removeLocationUpdates();
                             }
             }
@@ -281,8 +309,12 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         // Bind to the service. If the service is in foreground mode, this signals to the service
         // that since this activity is in the foreground, the service can exit foreground mode.
-        bindService(new Intent(this, LocationUpdatesService.class), mServiceConnection,
-               Context.BIND_AUTO_CREATE);
+        int result = ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_FINE_LOCATION);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            bindService(new Intent(this, LocationUpdatesService.class), mServiceConnection,
+                    Context.BIND_AUTO_CREATE);
+        }
+
     }
 
     @Override
@@ -391,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
     private void setButtonsState(boolean requestingLocationUpdates) {
         if (requestingLocationUpdates) {
-            Toast.makeText(mService, String.valueOf(requestingLocationUpdates), Toast.LENGTH_SHORT).show();
+
 
         } else {
 

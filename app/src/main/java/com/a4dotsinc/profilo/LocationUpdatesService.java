@@ -57,7 +57,7 @@ import com.google.firebase.database.ValueEventListener;
  */
 public class LocationUpdatesService extends Service {
 
-    DatabaseReference mDatabase, mFlagedLoc;
+    DatabaseReference mDatabase, mFlagedLoc, mDatabase2;
 
     private static final String PACKAGE_NAME =
             "com.a4dotsinc.profilo";
@@ -128,6 +128,9 @@ public class LocationUpdatesService extends Service {
 
      public DataSnapshot toaccessLocData;
 
+    Context applicationContext = MainActivity.getContextOfApplication();
+    String unique_id = android.provider.Settings.Secure.getString(applicationContext.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
+
     public LocationUpdatesService() {
     }
 
@@ -168,11 +171,12 @@ public class LocationUpdatesService extends Service {
         Log.i(TAG, "Service started");
         boolean startedFromNotification = intent.getBooleanExtra(EXTRA_STARTED_FROM_NOTIFICATION,
                 false);
-
+        mDatabase2 = FirebaseDatabase.getInstance().getReference().child("toggle");
         // We got here because the user decided to remove location updates from the notification.
         if (startedFromNotification) {
             removeLocationUpdates();
             stopSelf();
+            mDatabase2.setValue(false);
         }
         // Tells the system to not try to recreate the service after it has been killed.
         return START_NOT_STICKY;
@@ -331,8 +335,8 @@ public class LocationUpdatesService extends Service {
         final AudioManager am = (AudioManager)getSystemService(AUDIO_SERVICE);
 
         mLocation = location;
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child("TestUser");
-        mFlagedLoc = FirebaseDatabase.getInstance().getReference().child("FlagedLoc").child("TestUser");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("LocData").child(unique_id);
+        mFlagedLoc = FirebaseDatabase.getInstance().getReference().child("FlagedLoc").child(unique_id);
 
         // Notify anyone listening for broadcasts about the new location.
         Intent intent = new Intent(ACTION_BROADCAST);
